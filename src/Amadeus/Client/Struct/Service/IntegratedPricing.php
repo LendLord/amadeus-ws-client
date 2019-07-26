@@ -22,6 +22,7 @@
 
 namespace Amadeus\Client\Struct\Service;
 
+use Amadeus\Client\RequestOptions\Fare\PricePnr\FareBasis;
 use Amadeus\Client\RequestOptions\Fare\PricePnr\PaxSegRef;
 use Amadeus\Client\RequestOptions\Service\FormOfPayment;
 use Amadeus\Client\RequestOptions\Service\FrequentFlyer;
@@ -36,8 +37,9 @@ use Amadeus\Client\Struct\Fare\PricePnr13\FrequentFlyerInformation;
 use Amadeus\Client\Struct\Fare\PricePnr13\LocationInformation;
 use Amadeus\Client\Struct\Fare\PricePnr13\OptionDetail;
 use Amadeus\Client\Struct\Fare\PricePnr13\PaxSegTstReference;
-use Amadeus\Client\Struct\Service\IntegratedPricing\PricingOptionKey;
+use Amadeus\Client\Struct\Fare\PricePnr13\PricingOptionGroup;
 use Amadeus\Client\Struct\Service\IntegratedPricing\PricingOption;
+use Amadeus\Client\Struct\Service\IntegratedPricing\PricingOptionKey;
 
 /**
  * Service_IntegratedPricing request structure
@@ -68,9 +70,14 @@ class IntegratedPricing extends BasePricingMessage
      * @param ServiceIntegratedPricingOptions|ServiceIntegratedCatalogueOptions $options
      * @return PricingOption[]
      */
-    protected function loadPricingOptions($options)
+    public static function loadPricingOptions($options)
     {
         $priceOptions = [];
+
+        $priceOptions = self::mergeOptions(
+            $priceOptions,
+            self::makePricingOptionFareBasisOverride($options->pricingsFareBasis)
+        );
 
         $priceOptions = self::mergeOptions(
             $priceOptions,
@@ -157,6 +164,29 @@ class IntegratedPricing extends BasePricingMessage
     }
 
     /**
+     *
+     * @param FareBasis[] $pricingsFareBasis
+     * @return PricingOptionGroup[]
+     */
+    protected static function makePricingOptionFareBasisOverride($pricingsFareBasis)
+    {
+        $opt = [];
+        if ($pricingsFareBasis !== null) {
+            foreach ($pricingsFareBasis as $pricingFareBasis) {
+                $po = new PricingOptionGroup($pricingFareBasis->overrideType);
+
+                $po->optionDetail = new OptionDetail($pricingFareBasis->fareBasisCode);
+
+                $po->paxSegTstReference = new PaxSegTstReference($pricingFareBasis->references);
+
+                $opt[] = $po;
+            }
+        }
+
+        return $opt;
+    }
+
+    /**
      * @param string|null $validatingCarrier
      * @return PricingOption[]
      */
@@ -200,7 +230,7 @@ class IntegratedPricing extends BasePricingMessage
      * @param PaxSegRef[] $references
      * @return PricingOption[]
      */
-    protected function makePricingOptionWithOptionDetailAndRefs($overrideCode, $options, $references)
+    protected static function makePricingOptionWithOptionDetailAndRefs($overrideCode, $options, $references)
     {
         $opt = [];
 
