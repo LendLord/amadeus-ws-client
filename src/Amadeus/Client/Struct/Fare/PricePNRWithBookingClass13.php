@@ -87,6 +87,11 @@ class PricePNRWithBookingClass13 extends BasePricingMessage
     {
         $priceOptions = [];
 
+        $priceOptions =  self::mergeOptions(
+            $priceOptions,
+            self::makePricingOptionForCabin($options->cabin)
+        );
+
         $priceOptions = self::mergeOptions(
             $priceOptions,
             self::makePricingOptionForValidatingCarrier($options->validatingCarrier)
@@ -220,6 +225,25 @@ class PricePNRWithBookingClass13 extends BasePricingMessage
             if (!self::hasPricingGroup($overrideOptionWithCriteria["key"], $priceOptions)) {
                 $opt[] = new PricingOptionGroup($overrideOptionWithCriteria["key"], $overrideOptionWithCriteria["optionDetail"]);
             }
+        }
+
+        return $opt;
+    }
+
+    /**
+     * @param string|null $cabin
+     * @return PricePnr13\PricingOptionGroup[]
+     */
+    protected static function makePricingOptionForCabin($cabin)
+    {
+        $opt = [];
+
+        if ($cabin !== null) {
+            $po = new PricingOptionGroup(PricingOptionKey::OPTION_CABIN);
+
+            $po->optionDetail = new OptionDetail($cabin);
+
+            $opt[] = $po;
         }
 
         return $opt;

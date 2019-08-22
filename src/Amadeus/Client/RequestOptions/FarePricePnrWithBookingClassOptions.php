@@ -129,6 +129,11 @@ class FarePricePnrWithBookingClassOptions extends Base
     public $overrideOptionsWithCriteria = [];
 
     /**
+     * @var string
+     */
+    public $cabin;
+
+    /**
      * Specify the validating carrier
      *
      * @var string
