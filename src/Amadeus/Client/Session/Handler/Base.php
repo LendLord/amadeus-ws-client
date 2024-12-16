@@ -445,11 +445,11 @@ abstract class Base implements HandlerInterface, LoggerAwareInterface
     {
         $this->log(
             LogLevel::INFO,
-            'Called '.$messageName.' with request: '.$this->getSoapClient($messageName)->__getLastRequest()
+            'Called '.$messageName.' with request', [$this->getSoapClient($messageName)->__getLastRequest()]
         );
         $this->log(
             LogLevel::INFO,
-            'Response:  '.$this->getSoapClient($messageName)->__getLastResponse()
+            'Response', [$this->getSoapClient($messageName)->__getLastResponse()]
         );
     }
 
