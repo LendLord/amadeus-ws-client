@@ -1657,6 +1657,15 @@ class Client extends Base
         return $this->callMessage($msgName, $options, $messageOptions);
     }
 
+    public function fareGetFareFamilyDescription(
+        RequestOptions\FareGetFareFamilyDescriptionOptions $options,
+        $messageOptions = []
+    )
+    {
+        $msgName = 'Fare_GetFareFamilyDescription';
+        return $this->callMessage($msgName, $options, $messageOptions);
+    }
+
     /**
      * Call a message with the given parameters
      *
@@ -1715,7 +1724,7 @@ class Client extends Base
     {
         $options = [
             'endSession' => $endSession,
-            'returnXml' => $this->returnResultXml
+            'returnXml' => $this->returnResultXml,
         ];
 
         if (array_key_exists('endSession', $incoming)) {
