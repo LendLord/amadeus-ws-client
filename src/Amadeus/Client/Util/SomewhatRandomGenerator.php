@@ -41,18 +41,17 @@ class SomewhatRandomGenerator
      */
     public static function generateSomewhatRandomString($length = 22)
     {
-        $chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz";
-        srand((int)(microtime() * 1000000));
-        $i = 0;
-        $somewhatRandom = '';
+        $chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz';
+        $charsLength = strlen($chars);
 
-        while ($i < $length) {
-            $num = rand() % 60;
-            $tmp = substr($chars, $num, 1);
-            $somewhatRandom = $somewhatRandom.$tmp;
-            $i++;
+        $result = '';
+
+        for ($i = 0; $i < $length; $i++) {
+            $index = mt_rand(0, $charsLength - 1);
+            $result .= $chars[$index];
         }
 
-        return $somewhatRandom;
+        return $result;
     }
+
 }
