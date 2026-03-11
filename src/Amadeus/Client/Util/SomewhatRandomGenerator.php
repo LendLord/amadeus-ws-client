@@ -42,7 +42,8 @@ class SomewhatRandomGenerator
     public static function generateSomewhatRandomString($length = 22)
     {
         $chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz";
-        srand((int)(microtime() * 1000000));
+        list($usec) = explode(' ', microtime());
+        srand((int)((float)$usec * 1000000));
         $i = 0;
         $somewhatRandom = '';
 
@@ -55,4 +56,5 @@ class SomewhatRandomGenerator
 
         return $somewhatRandom;
     }
+
 }
