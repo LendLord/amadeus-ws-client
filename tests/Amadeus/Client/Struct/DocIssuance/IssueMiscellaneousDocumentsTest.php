@@ -29,6 +29,7 @@ use Amadeus\Client\Struct\DocIssuance\IssueMiscellaneousDocuments;
 use Amadeus\Client\Struct\DocIssuance\PassengerReference;
 use Amadeus\Client\Struct\DocIssuance\PaxDetails;
 use Amadeus\Client\Struct\DocIssuance\ReferenceDetails;
+use Amadeus\Client\Struct\DocIssuance\Selection;
 use Amadeus\Client\Struct\DocIssuance\StatusDetails;
 use Amadeus\Client\Struct\DocIssuance\StockTicketNumberDetails;
 use Test\Amadeus\BaseTestCase;
@@ -228,10 +229,10 @@ class IssueMiscellaneousDocumentsTest extends BaseTestCase
 
         $message = new IssueMiscellaneousDocuments($opt);
 
-        $this->assertCount(1, $message->selection);
-        $this->assertCount(1, $message->selection[0]->referenceDetails);
-        $this->assertEquals(ReferenceDetails::TYPE_TSM, $message->selection[0]->referenceDetails[0]->type);
-        $this->assertEquals(1, $message->selection[0]->referenceDetails[0]->value);
+        $this->assertInstanceOf(Selection::class, $message->selection);
+        $this->assertCount(1, $message->selection->referenceDetails);
+        $this->assertEquals(ReferenceDetails::TYPE_TSM, $message->selection->referenceDetails[0]->type);
+        $this->assertEquals(1, $message->selection->referenceDetails[0]->value);
 
         $this->assertEmpty($message->optionGroup);
         $this->assertEmpty($message->otherCompoundOptions);
@@ -246,10 +247,10 @@ class IssueMiscellaneousDocumentsTest extends BaseTestCase
 
         $message2 = new IssueMiscellaneousDocuments($opt);
 
-        $this->assertCount(1, $message2->selection);
-        $this->assertCount(1, $message2->selection[0]->referenceDetails);
-        $this->assertEquals(ReferenceDetails::TYPE_TSM_TATTOO, $message2->selection[0]->referenceDetails[0]->type);
-        $this->assertEquals(3, $message2->selection[0]->referenceDetails[0]->value);
+        $this->assertInstanceOf(Selection::class, $message->selection);
+        $this->assertCount(1, $message2->selection->referenceDetails);
+        $this->assertEquals(ReferenceDetails::TYPE_TSM_TATTOO, $message2->selection->referenceDetails[0]->type);
+        $this->assertEquals(3, $message2->selection->referenceDetails[0]->value);
 
         $this->assertEmpty($message2->optionGroup);
         $this->assertEmpty($message2->otherCompoundOptions);
@@ -279,12 +280,12 @@ class IssueMiscellaneousDocumentsTest extends BaseTestCase
 
         $message = new IssueMiscellaneousDocuments($opt);
 
-        $this->assertCount(1, $message->selection);
-        $this->assertCount(2, $message->selection[0]->referenceDetails);
-        $this->assertEquals(ReferenceDetails::TYPE_LINE_NUMBER, $message->selection[0]->referenceDetails[0]->type);
-        $this->assertEquals(5, $message->selection[0]->referenceDetails[0]->value);
-        $this->assertEquals(ReferenceDetails::TYPE_LINE_NUMBER, $message->selection[0]->referenceDetails[1]->type);
-        $this->assertEquals(6, $message->selection[0]->referenceDetails[1]->value);
+        $this->assertInstanceOf(Selection::class, $message->selection);
+        $this->assertCount(2, $message->selection->referenceDetails);
+        $this->assertEquals(ReferenceDetails::TYPE_LINE_NUMBER, $message->selection->referenceDetails[0]->type);
+        $this->assertEquals(5, $message->selection->referenceDetails[0]->value);
+        $this->assertEquals(ReferenceDetails::TYPE_LINE_NUMBER, $message->selection->referenceDetails[1]->type);
+        $this->assertEquals(6, $message->selection->referenceDetails[1]->value);
 
         $this->assertEmpty($message->optionGroup);
         $this->assertEmpty($message->otherCompoundOptions);
