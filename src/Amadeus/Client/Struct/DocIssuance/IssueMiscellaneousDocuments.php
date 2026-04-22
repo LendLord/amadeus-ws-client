@@ -68,6 +68,15 @@ class IssueMiscellaneousDocuments extends DocIssuanceBaseMsg
         }
     }
 
+    protected function addSelectionItem(ReferenceDetails $ref)
+    {
+        if (is_null($this->selection) || empty($this->selection)) {
+            $this->selection = new Selection();
+        }
+
+        $this->selection->referenceDetails[] = $ref;
+    }
+
     /**
      * @param DocIssuanceIssueMiscDocOptions $options
      */
