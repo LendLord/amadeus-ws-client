@@ -57,12 +57,12 @@ class CreateTSTFromPricingTest extends BaseTestCase
         );
 
         $this->assertCount(1, $msg->psaList);
-        $this->assertEquals(3, $msg->psaList[0]->itemReference->uniqueReference);
-        $this->assertEquals(ItemReference::REFTYPE_TST, $msg->psaList[0]->itemReference->referenceType);
+        $this->assertEquals(3, $msg->psaList[0]->enc_value->itemReference->uniqueReference);
+        $this->assertEquals(ItemReference::REFTYPE_TST, $msg->psaList[0]->enc_value->itemReference->referenceType);
 
-        $this->assertCount(1, $msg->psaList[0]->paxReference->refDetails);
-        $this->assertEquals(1, $msg->psaList[0]->paxReference->refDetails[0]->refNumber);
-        $this->assertEquals(RefDetails::QUAL_ADULT, $msg->psaList[0]->paxReference->refDetails[0]->refQualifier);
+        $this->assertCount(1, $msg->psaList[0]->enc_value->paxReference->refDetails);
+        $this->assertEquals(1, $msg->psaList[0]->enc_value->paxReference->refDetails[0]->refNumber);
+        $this->assertEquals(RefDetails::QUAL_ADULT, $msg->psaList[0]->enc_value->paxReference->refDetails[0]->refQualifier);
     }
 
     public function testCanMakeMultiTstFromPricing()
@@ -85,15 +85,59 @@ class CreateTSTFromPricingTest extends BaseTestCase
         );
 
         $this->assertEquals(3, count($msg->psaList));
-        $this->assertEquals(1, $msg->psaList[0]->itemReference->uniqueReference);
-        $this->assertEquals(ItemReference::REFTYPE_TST, $msg->psaList[0]->itemReference->referenceType);
-        $this->assertNull($msg->psaList[0]->paxReference);
-        $this->assertEquals(2, $msg->psaList[1]->itemReference->uniqueReference);
-        $this->assertEquals(ItemReference::REFTYPE_TST, $msg->psaList[1]->itemReference->referenceType);
-        $this->assertNull($msg->psaList[1]->paxReference);
-        $this->assertEquals(3, $msg->psaList[2]->itemReference->uniqueReference);
-        $this->assertEquals(ItemReference::REFTYPE_TST, $msg->psaList[2]->itemReference->referenceType);
-        $this->assertNull($msg->psaList[2]->paxReference);
+        $this->assertEquals(1, $msg->psaList[0]->enc_value->itemReference->uniqueReference);
+        $this->assertEquals(ItemReference::REFTYPE_TST, $msg->psaList[0]->enc_value->itemReference->referenceType);
+        $this->assertNull($msg->psaList[0]->enc_value->paxReference);
+        $this->assertEquals(2, $msg->psaList[1]->enc_value->itemReference->uniqueReference);
+        $this->assertEquals(ItemReference::REFTYPE_TST, $msg->psaList[1]->enc_value->itemReference->referenceType);
+        $this->assertNull($msg->psaList[1]->enc_value->paxReference);
+        $this->assertEquals(3, $msg->psaList[2]->enc_value->itemReference->uniqueReference);
+        $this->assertEquals(ItemReference::REFTYPE_TST, $msg->psaList[2]->enc_value->itemReference->referenceType);
+        $this->assertNull($msg->psaList[2]->enc_value->paxReference);
+    }
+
+
+    public function testMakePsaListWrapsPsaListInSoapVar()
+    {
+        $msg = new CreateTSTFromPricing(
+            new TicketCreateTstFromPricingOptions([
+                'pricings' => [
+                    new Pricing([
+                        'tstNumber' => 1,
+                    ]),
+                    new Pricing([
+                        'tstNumber' => 2,
+                        'passengerReferences' => [
+                            new PassengerReference([
+                                'id' => 1,
+                                'type' => PassengerReference::TYPE_ADULT,
+                            ]),
+                        ],
+                    ]),
+                ],
+            ])
+        );
+
+        $this->assertInstanceOf('\SoapVar', $msg->psaList[0]);
+        $this->assertEquals(SOAP_ENC_OBJECT, $msg->psaList[0]->enc_type);
+        $this->assertNull($msg->psaList[0]->enc_name);
+        $this->assertNull($msg->psaList[0]->enc_namens);
+        $this->assertInstanceOf('\Amadeus\Client\Struct\Ticket\PsaList', $msg->psaList[0]->enc_value);
+        $this->assertEquals(1, $msg->psaList[0]->enc_value->itemReference->uniqueReference);
+        $this->assertNull($msg->psaList[0]->enc_value->paxReference);
+
+        $this->assertInstanceOf('\SoapVar', $msg->psaList[1]);
+        $this->assertEquals(SOAP_ENC_OBJECT, $msg->psaList[1]->enc_type);
+        $this->assertInstanceOf('\Amadeus\Client\Struct\Ticket\PsaList', $msg->psaList[1]->enc_value);
+        $this->assertCount(1, $msg->psaList[1]->enc_value->paxReference->refDetails);
+        $this->assertEquals(
+            RefDetails::QUAL_ADULT,
+            $msg->psaList[1]->enc_value->paxReference->refDetails[0]->refQualifier
+        );
+        $this->assertEquals(
+            1,
+            $msg->psaList[1]->enc_value->paxReference->refDetails[0]->refNumber
+        );
     }
 
 

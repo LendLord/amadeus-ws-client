@@ -42,12 +42,12 @@ class CreateTSMFromPricingTest extends BaseTestCase
         );
 
         $this->assertEquals(1, count($msg->psaList));
-        $this->assertEquals(2, $msg->psaList[0]->itemReference->uniqueReference);
-        $this->assertEquals(ItemReference::REFTYPE_TSM, $msg->psaList[0]->itemReference->referenceType);
+        $this->assertEquals(2, $msg->psaList[0]->enc_value->itemReference->uniqueReference);
+        $this->assertEquals(ItemReference::REFTYPE_TSM, $msg->psaList[0]->enc_value->itemReference->referenceType);
 
-        $this->assertEquals(1, count($msg->psaList[0]->paxReference->refDetails));
-        $this->assertEquals(1, $msg->psaList[0]->paxReference->refDetails[0]->refNumber);
-        $this->assertEquals(RefDetails::QUAL_PASSENGER, $msg->psaList[0]->paxReference->refDetails[0]->refQualifier);
+        $this->assertEquals(1, count($msg->psaList[0]->enc_value->paxReference->refDetails));
+        $this->assertEquals(1, $msg->psaList[0]->enc_value->paxReference->refDetails[0]->refNumber);
+        $this->assertEquals(RefDetails::QUAL_PASSENGER, $msg->psaList[0]->enc_value->paxReference->refDetails[0]->refQualifier);
     }
 
     public function testCanMakeTsmFromPricingWithPnrInfo()

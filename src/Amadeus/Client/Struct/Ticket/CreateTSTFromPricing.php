@@ -90,7 +90,7 @@ class CreateTSTFromPricing extends BaseWsMessage
             $list->paxReference = $this->makePaxRef($pricing->passengerReferences);
         }
 
-        return $list;
+        return new \SoapVar($list, SOAP_ENC_OBJECT);
     }
 
     /**
